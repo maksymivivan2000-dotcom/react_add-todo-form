@@ -7,7 +7,7 @@ import { Todo } from './types/Todo';
 
 export const App = () => {
   const preparedTodos: Todo[] = todosFromServer.map(todo => {
-    const user = usersFromServer.find(u => u.id === todo.userId)!;
+    const user = usersFromServer.find(currentUser => currentUser.id === todo.userId)!;
 
     return {
       ...todo,
@@ -34,13 +34,13 @@ export const App = () => {
       return;
     }
 
-    const user = usersFromServer.find(u => u.id === selectedUserId);
+    const user = usersFromServer.find(currentUser => currentUser.id === selectedUserId);
 
     if (!user) {
       return;
     }
 
-    const maxId = Math.max(...todos.map(todo => todo.id));
+    const maxId = todos.length > 0 ? Math.max(...todos.map(todo => todo.id)) : 0;
 
     const newTodo: Todo = {
       id: maxId + 1,
@@ -63,7 +63,9 @@ export const App = () => {
 
       <form onSubmit={handleSubmit}>
         <div className="field">
+          <label htmlFor="title-input">Title</label>
           <input
+            id="title-input"
             type="text"
             data-cy="titleInput"
             placeholder="Enter a title"
@@ -80,7 +82,9 @@ export const App = () => {
         </div>
 
         <div className="field">
+          <label htmlFor="user-select">User</label>
           <select
+            id="user-select"
             data-cy="userSelect"
             value={selectedUserId}
             onChange={event => {
